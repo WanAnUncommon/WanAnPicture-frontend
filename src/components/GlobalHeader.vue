@@ -20,7 +20,20 @@
       <a-col flex="180px">
         <div class="user-login-status">
           <div v-if="loginUserStore.loginUser.id">
-            {{ loginUserStore.loginUser.userName ?? '无名' }}
+            <a-dropdown>
+              <a-space>
+                <a-avatar :src="loginUserStore.loginUser.userAvatar" />
+                {{ loginUserStore.loginUser.userName ?? '无名' }}
+              </a-space>
+              <template #overlay>
+                <a-menu>
+                  <a-menu-item @click="doLogout">
+                    <LogoutOutlined />
+                    退出登录
+                  </a-menu-item>
+                </a-menu>
+              </template>
+            </a-dropdown>
           </div>
           <div v-else>
             <a-button type="primary" href="/user/login">登录</a-button>
@@ -31,13 +44,15 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { h, ref } from 'vue'
-import { AppstoreOutlined, HomeOutlined } from '@ant-design/icons-vue'
-import { MenuProps } from 'ant-design-vue'
+import { computed, h, ref } from 'vue'
+import { AppstoreOutlined, HomeOutlined, LogoutOutlined } from '@ant-design/icons-vue'
+import { MenuProps, message } from 'ant-design-vue'
 import { useRouter } from 'vue-router'
 import { useLoginUserStore } from '@/stores/useLoginUserStore.ts'
+import { userLogoutUsingPost } from '@/api/userController.ts'
 
-const items = ref<MenuProps['items']>([
+// 原始菜单
+const orangeMenus = [
   {
     key: '/',
     icon: () => h(HomeOutlined),
@@ -45,12 +60,28 @@ const items = ref<MenuProps['items']>([
     title: '主页',
   },
   {
-    key: '/about',
+    key: '/admin/userManage',
     icon: () => h(AppstoreOutlined),
-    label: '关于',
-    title: '关于',
+    label: '用户管理',
+    title: '用户管理',
   },
-])
+]
+
+// 过滤菜单项
+const filterMenus = (menus = [] as MenuProps['items']) => {
+  return menus?.filter((item) => {
+    // 如果是管理员菜单，则需要判断用户是否是管理员
+    if (item?.key?.startsWith('/admin')) {
+      if (!loginUserStore.loginUser || loginUserStore.loginUser.userRole !== 'admin') {
+        return false
+      }
+    }
+    return true
+  })
+}
+// 过滤原始菜单
+const items = computed(() => filterMenus(orangeMenus))
+
 const router = useRouter()
 // 菜单跳转事件
 const doMenuClick = ({ key }) => {
@@ -63,6 +94,20 @@ router.afterEach((to, from) => {
   current.value = [to.path]
 })
 const loginUserStore = useLoginUserStore()
+const doLogout = async () => {
+  const res = await userLogoutUsingPost()
+  if (res.data.code === 200) {
+    loginUserStore.setLoginUser({
+      userName: '未登录',
+    })
+    message.success('退出成功')
+    await router.push({
+      path: '/user/login',
+    })
+  } else {
+    message.error('退出失败:' + res.data.message)
+  }
+}
 </script>
 <style scoped>
 #globalHeader .title-bar {
