@@ -43,7 +43,7 @@ const beforeUpload = (file: UploadProps['fileList'][number]) => {
   }
   const isLt3M = file.size / 1024 / 1024 < 3
   if (!isLt3M) {
-    message.error('图片大小不能超过 #MB!')
+    message.error('图片大小不能超过 3MB!')
   }
   return isJpgOrPng && isLt3M
 }
@@ -63,10 +63,15 @@ const uploadHandler = async ({ file}:any) => {
 </script>
 <style scoped>
 .picture-upload :deep( .ant-upload ){
-  width: 100%;
-  height: 100%;
+  width: 100% !important;
+  height: 100% !important;
   min-height: 152px;
   min-width: 152px;
+}
+
+.picture-upload img{
+  max-width: 100%;
+  max-height: 480px;
 }
 
 .ant-upload-select-picture-card i {

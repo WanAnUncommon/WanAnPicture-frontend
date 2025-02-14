@@ -1,9 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-import UserLoginView from "@/views/user/UserLoginView.vue";
-import UserRegisterView from "@/views/user/UserRegisterView.vue";
-import UserManageView from "@/views/admin/UserManageView.vue";
-import AddPictureView from "@/views/AddPictureView.vue";
+import UserLoginView from '@/views/user/UserLoginView.vue'
+import UserRegisterView from '@/views/user/UserRegisterView.vue'
+import UserManageView from '@/views/admin/UserManageView.vue'
+import AddPictureView from '@/views/AddPictureView.vue'
+import PictureManageView from '@/views/admin/PictureManageView.vue'
+import PictureDetailView from "@/views/PictureDetailView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -32,6 +34,17 @@ const router = createRouter({
       path: '/addPicture',
       name: '添加图片',
       component: AddPictureView,
+    },
+    {
+      path: '/admin/pictureManage',
+      name: '管理图片',
+      component: PictureManageView,
+    },
+    {
+      path: '/picture/:id',
+      name: '图片详情',
+      component: PictureDetailView,
+      props: true,
     },
   ],
 })

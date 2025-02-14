@@ -156,7 +156,7 @@ declare namespace API {
     picScale?: number
     picSize?: number
     picWidth?: number
-    searchTest?: string
+    searchText?: string
     sortField?: string
     sortOrder?: string
     tags?: string[]

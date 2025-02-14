@@ -66,6 +66,12 @@ const orangeMenus = [
     title: '用户管理',
   },
   {
+    key: '/admin/pictureManage',
+    icon: () => h(AppstoreOutlined),
+    label: '图片管理',
+    title: '图片管理',
+  },
+  {
     key: '/addPicture',
     icon: () => h(AppstoreOutlined),
     label: '添加图片',
