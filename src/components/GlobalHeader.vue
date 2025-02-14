@@ -65,6 +65,12 @@ const orangeMenus = [
     label: '用户管理',
     title: '用户管理',
   },
+  {
+    key: '/addPicture',
+    icon: () => h(AppstoreOutlined),
+    label: '添加图片',
+    title: '添加图片',
+  },
 ]
 
 // 过滤菜单项

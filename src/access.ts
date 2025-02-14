@@ -1,8 +1,7 @@
-// 是否为首次获取登录用户信息
 import router from '@/router'
 import { useLoginUserStore } from '@/stores/useLoginUserStore.ts'
 import { message } from 'ant-design-vue'
-
+// 是否为首次获取登录用户信息
 let firstFetchLoginUser = true
 
 router.beforeEach(async (to, from, next) => {
@@ -20,6 +19,6 @@ router.beforeEach(async (to, from, next) => {
       return
     }
   }
-  next();
+  next()
   return
 })

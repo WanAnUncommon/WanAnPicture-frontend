@@ -42,7 +42,7 @@ export async function queryUserByPageUsingPost(
   body: API.UserQueryDTO,
   options?: { [key: string]: any }
 ) {
-  return request<API.BaseResponseListUserVO_>('/api/user/list/page', {
+  return request<API.BaseResponsePageUserVO_>('/api/user/list/page', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

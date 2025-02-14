@@ -9,7 +9,7 @@ const myAxios = axios.create({
 })
 
 // 添加请求拦截器
-axios.interceptors.request.use(function (config) {
+myAxios.interceptors.request.use(function (config) {
   // 在发送请求之前做些什么
   return config;
 }, function (error) {
@@ -18,8 +18,8 @@ axios.interceptors.request.use(function (config) {
 });
 
 // 添加响应拦截器
-axios.interceptors.response.use(function (response) {
-  const {data}=response;
+myAxios.interceptors.response.use(function (response) {
+  const { data } = response
   // 未登录
   if (data.code===40100){
     if (!response.request.responseURL.includes('user/get/login')&&
