@@ -8,7 +8,22 @@
         <a-input v-model:value="searchParams.category" placeholder="请输入类型" allow-clear />
       </a-form-item>
       <a-form-item label="标签">
-        <a-select v-model:value="searchParams.tags" mode="tags" placeholder="请输入标签" style="min-width: 124px" allow-clear />
+        <a-select
+          v-model:value="searchParams.tags"
+          mode="tags"
+          placeholder="请输入标签"
+          style="min-width: 124px"
+          allow-clear
+        />
+      </a-form-item>
+      <a-form-item label="审核状态">
+        <a-select
+          v-model:value="searchParams.reviewStatus"
+          placeholder="请输入审核状态"
+          style="min-width: 124px"
+          :options="PICTURE_REVIEW_STATUS_OPTIONS"
+          allow-clear
+        />
       </a-form-item>
       <a-form-item>
         <a-button type="primary" html-type="submit">搜索</a-button>
@@ -34,18 +49,39 @@
         </template>
         <template v-if="column.dataIndex === 'picInfo'">
           <div>格式：{{ record.picFormat }}</div>
-          <div>大小：{{ (record.picSize/1024).toFixed(2) }}KB</div>
+          <div>大小：{{ (record.picSize / 1024).toFixed(2) }}KB</div>
           <div>宽：{{ record.picWidth }}</div>
           <div>高：{{ record.picHeight }}</div>
           <div>宽高比：{{ record.picScale }}</div>
         </template>
+        <template v-if="column.dataIndex === 'reviewMessage'">
+          <div>审核状态：{{ PICTURE_REVIEW_STATUS_MAP[record.reviewStatus] }}</div>
+          <div>审核信息：{{ record.reviewMessage }}</div>
+          <div>审核人：{{ record.reviewerId }}</div>
+          <div v-if="record.reviewTime">
+            审核时间：{{ dayjs(record.reviewTime).format('YYYY-MM-DD HH:mm:ss') }}
+          </div>
+        </template>
         <template v-if="column.dataIndex === 'editTime'">
-          {{dayjs(record.editTime).format('YYYY-MM-DD HH:mm:ss')}}
+          {{ dayjs(record.editTime).format('YYYY-MM-DD HH:mm:ss') }}
         </template>
         <template v-else-if="column.key === 'action'">
-          <a-space>
+          <a-space wrap>
             <a-button type="link" :href="`/addPicture?id=${record.id}`">编辑</a-button>
             <a-button danger @click="doDelete(record.id)">删除</a-button>
+            <a-button
+              @click="handleReview(record, PICTURE_REVIEW_STATUS_ENUM.PASS)"
+              type="link"
+              v-if="record.reviewStatus !== PICTURE_REVIEW_STATUS_ENUM.PASS"
+              >通过
+            </a-button>
+            <a-button
+              @click="handleReview(record, PICTURE_REVIEW_STATUS_ENUM.REJECT)"
+              danger
+              type="link"
+              v-if="record.reviewStatus !== PICTURE_REVIEW_STATUS_ENUM.REJECT"
+              >拒绝
+            </a-button>
           </a-space>
         </template>
       </template>
@@ -55,8 +91,17 @@
 <script lang="ts" setup>
 import { computed, onMounted, reactive, ref } from 'vue'
 import { message } from 'ant-design-vue'
-import { deletePictureUsingPost, listPictureByPageUsingPost } from '@/api/pictureController.ts'
-import dayjs from "dayjs";
+import {
+  deletePictureUsingPost,
+  doPictureReviewUsingPost,
+  listPictureByPageUsingPost,
+} from '@/api/pictureController.ts'
+import dayjs from 'dayjs'
+import {
+  PICTURE_REVIEW_STATUS_ENUM,
+  PICTURE_REVIEW_STATUS_MAP,
+  PICTURE_REVIEW_STATUS_OPTIONS
+} from '../../constants/picture.ts'
 
 const columns = [
   {
@@ -86,6 +131,10 @@ const columns = [
   {
     title: '图片信息',
     dataIndex: 'picInfo',
+  },
+  {
+    title: '审核信息',
+    dataIndex: 'reviewMessage',
   },
   {
     title: '创建用户ID',
@@ -155,6 +204,23 @@ const doDelete = async (id: string) => {
     await fetchData()
   } else {
     message.error('删除失败：' + res.data.message)
+  }
+}
+
+// 审核
+const handleReview = async (record: API.Picture, status: number) => {
+  const reviewMessage =
+    status === PICTURE_REVIEW_STATUS_ENUM.PASS ? '管理员审核通过' : '管理员审核拒绝'
+  const res = await doPictureReviewUsingPost({
+    id: record.id,
+    reviewMessage,
+    reviewStatus: status,
+  })
+  if (res.data.code === 200) {
+    message.success('审核成功')
+    await fetchData()
+  } else {
+    message.error('审核失败：' + res.data.message)
   }
 }
 </script>
