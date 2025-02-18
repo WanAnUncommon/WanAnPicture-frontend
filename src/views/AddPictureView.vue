@@ -60,7 +60,6 @@ import UrlPictureUpload from '@/components/UrlPictureUpload.vue'
 
 const picture = ref<API.PictureVO>()
 
-const loading = ref(false)
 const uploadType = ref<'file' | 'url'>('file')
 
 // 上传成功

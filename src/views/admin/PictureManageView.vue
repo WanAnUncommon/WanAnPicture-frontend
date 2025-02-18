@@ -1,5 +1,13 @@
 <template>
   <div id="pictureManageView">
+    <a-flex justify="space-between">
+      <h2>图片管理</h2>
+      <a-space>
+        <a-button type="primary" href="/addPicture" target="_blank">创建图片</a-button>
+        <a-button type="primary" href="/admin/addPicture/batch" target="_blank" ghost>批量创建</a-button>
+      </a-space>
+    </a-flex>
+    <div style="margin-bottom: 16px" />
     <a-form layout="inline" :model="searchParams" @finish="doSearch">
       <a-form-item label="关键词">
         <a-input v-model:value="searchParams.searchText" placeholder="搜索名称和简介" allow-clear />
