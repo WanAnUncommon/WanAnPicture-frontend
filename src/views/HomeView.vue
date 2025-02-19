@@ -38,7 +38,7 @@
             <template #cover>
               <img
                 :alt="picture.name"
-                :src="picture.url"
+                :src="picture.thumbnailUrl ?? picture.url"
                 style="height: 180px; object-fit: cover"
               />
             </template>
@@ -140,7 +140,7 @@ onMounted(() => {
 const router=useRouter();
 const doPictureClick=(picture:API.PictureVO)=>{
   router.push({
-    path: `/picture/${picture.id}`
+    path: `/picture/${picture.id}`,
   })
 }
 </script>
