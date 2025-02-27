@@ -45,7 +45,7 @@
             <a-card-meta :title="picture.name">
               <template #description>
                 <a-flex>
-                  <a-tag color="green">{{ picture.category ?? '默认分类' }}</a-tag>
+                  <a-tag color="green">{{ picture.category ??'默认分类' }}</a-tag>
                   <a-tag v-for="tag in picture.tags" :key="tag">{{ tag }}</a-tag>
                 </a-flex>
               </template>
