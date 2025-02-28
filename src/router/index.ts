@@ -7,6 +7,10 @@ import AddPictureView from '@/views/AddPictureView.vue'
 import PictureManageView from '@/views/admin/PictureManageView.vue'
 import PictureDetailView from "@/views/PictureDetailView.vue";
 import AddPictureBatchView from "@/views/admin/AddPictureBatchView.vue";
+import SpaceManageView from "@/views/admin/SpaceManageView.vue";
+import AddSpaceView from "@/views/AddSpaceView.vue";
+import MySpaceView from "@/views/MySpaceView.vue";
+import SpaceDetailView from "@/views/SpaceDetailView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -51,6 +55,26 @@ const router = createRouter({
       name: '图片详情',
       component: PictureDetailView,
       props: true,
+    },
+    {
+      path: '/admin/spaceManage',
+      name: '管理空间',
+      component: SpaceManageView,
+    },
+    {
+      path: '/addSpace',
+      name: '添加空间',
+      component: AddSpaceView,
+    },
+    {
+      path: '/mySpace',
+      name: '我的空间',
+      component: MySpaceView,
+    },
+    {
+      path: '/space/:id',
+      name: '空间详情',
+      component: SpaceDetailView,
     },
   ],
 })

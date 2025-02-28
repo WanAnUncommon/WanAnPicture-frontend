@@ -47,10 +47,10 @@ export async function getPictureByIdUsingGet(
   })
 }
 
-/** getPictureVOById GET /api/picture/get/vo */
+/** getPictureVoById GET /api/picture/get/vo */
 export async function getPictureVoByIdUsingGet(
   // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
-  params: API.getPictureVOByIdUsingGETParams,
+  params: API.getPictureVoByIdUsingGETParams,
   options?: { [key: string]: any }
 ) {
   return request<API.BaseResponsePictureVO_>('/api/picture/get/vo', {
@@ -77,7 +77,7 @@ export async function listPictureByPageUsingPost(
   })
 }
 
-/** listPictureVOByPage POST /api/picture/list/page/vo */
+/** listPictureVoByPage POST /api/picture/list/page/vo */
 export async function listPictureVoByPageUsingPost(
   body: API.PictureQueryRequest,
   options?: { [key: string]: any }

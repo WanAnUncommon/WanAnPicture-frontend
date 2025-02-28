@@ -31,6 +31,12 @@
                     <LogoutOutlined />
                     退出登录
                   </a-menu-item>
+                  <a-menu-item>
+                    <router-link to="/mySpace">
+                      <UserOutlined/>
+                      我的空间
+                    </router-link>
+                  </a-menu-item>
                 </a-menu>
               </template>
             </a-dropdown>
@@ -45,7 +51,7 @@
 </template>
 <script lang="ts" setup>
 import { computed, h, ref } from 'vue'
-import { AppstoreOutlined, HomeOutlined, LogoutOutlined } from '@ant-design/icons-vue'
+import { AppstoreOutlined, HomeOutlined, LogoutOutlined , UserOutlined } from '@ant-design/icons-vue'
 import { MenuProps, message } from 'ant-design-vue'
 import { useRouter } from 'vue-router'
 import { useLoginUserStore } from '@/stores/useLoginUserStore.ts'
@@ -76,6 +82,12 @@ const orangeMenus = [
     icon: () => h(AppstoreOutlined),
     label: '添加图片',
     title: '添加图片',
+  },
+  {
+    key: '/admin/spaceManage',
+    icon: () => h(AppstoreOutlined),
+    label: '空间管理',
+    title: '空间管理',
   },
 ]
 
