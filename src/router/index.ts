@@ -75,6 +75,7 @@ const router = createRouter({
       path: '/space/:id',
       name: '空间详情',
       component: SpaceDetailView,
+      props: true,
     },
   ],
 })

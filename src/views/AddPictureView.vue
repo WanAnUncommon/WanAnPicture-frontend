@@ -1,14 +1,17 @@
 <template>
   <div id="addPictureView">
     <h2 style="margin-bottom: 16px">{{ route.query?.id ? '编辑图片' : '创建图片' }}</h2>
+    <a-typography-paragraph v-if="spaceId" type="secondary">
+      保存至空间：<a :href="`/space/${spaceId}`" target="_blank">{{ spaceId }}</a>
+    </a-typography-paragraph>
     <a-tabs v-model:activeKey="uploadType">
       <a-tab-pane key="file" tab="文件上传"
         ><!--  文件上传图片  -->
-        <PictureUpload :picture="picture" :onSuccess="onSuccess" />
+        <PictureUpload :picture="picture" :spaceId="spaceId" :onSuccess="onSuccess" />
       </a-tab-pane>
-      <a-tab-pane key="url" tab="url上传" r
+      <a-tab-pane key="url" tab="url上传"
         ><!-- Url上传图片-->
-        <UrlPictureUpload :picture="picture" :onSuccess="onSuccess" />
+        <UrlPictureUpload :picture="picture" :spaceId="spaceId" :onSuccess="onSuccess" />
       </a-tab-pane>
     </a-tabs>
     <a-form v-if="picture" layout="vertical" :model="pictureForm" @finish="handleSubmit">
@@ -48,7 +51,7 @@
 </template>
 <script setup lang="ts">
 import PictureUpload from '@/components/PictureUpload.vue'
-import { onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 import {
   editPictureUsingPost,
   getPictureVoByIdUsingGet,
@@ -71,6 +74,9 @@ const onSuccess = (newPicture: API.PictureVO) => {
 const pictureForm = reactive<API.PictureEditRequest>({})
 
 const router = useRouter()
+const spaceId = computed(() => {
+  return route.query?.spaceId
+})
 
 /**
  * 提交表单
@@ -82,7 +88,7 @@ const handleSubmit = async (values: any) => {
     message.error('请重试上传图片')
     return
   }
-  const res = await editPictureUsingPost({ id: pictureId, ...values })
+  const res = await editPictureUsingPost({ id: pictureId, spaceId: spaceId.value, ...values })
   if (res.data.code === 200) {
     message.success('创建成功')
     await router.push({

@@ -44,16 +44,18 @@
             </a-descriptions-item>
           </a-descriptions>
           <a-space wrap>
-            <a-button type="primary" @click="doDownload">下载
-            <template #icon>
-              <DownloadOutlined />
-            </template></a-button>
+            <a-button type="primary" @click="doDownload"
+              >下载
+              <template #icon>
+                <DownloadOutlined />
+              </template>
+            </a-button>
             <a-button v-if="canEdit" :icon="h(EditOutlined)" type="default" @click="doEdit"
-              >编辑</a-button
-            >
+              >编辑
+            </a-button>
             <a-button v-if="canEdit" :icon="h(DeleteOutlined)" danger @click="doDelete"
-              >删除</a-button
-            >
+              >删除
+            </a-button>
           </a-space>
         </a-card>
       </a-col>
@@ -62,10 +64,10 @@
 </template>
 <script setup lang="ts">
 import { computed, h, onMounted, ref } from 'vue'
-import { DeleteOutlined, EditOutlined ,DownloadOutlined} from '@ant-design/icons-vue'
+import { DeleteOutlined, DownloadOutlined, EditOutlined } from '@ant-design/icons-vue'
 import { message } from 'ant-design-vue'
 import { deletePictureUsingPost, getPictureVoByIdUsingGet } from '@/api/pictureController.ts'
-import {downloadImage, formatSize} from '../utils'
+import { downloadImage, formatSize } from '../utils'
 import { useLoginUserStore } from '@/stores/useLoginUserStore.ts'
 import { useRouter } from 'vue-router'
 
@@ -114,11 +116,17 @@ const doDelete = async () => {
 
 const router = useRouter()
 const doEdit = () => {
-  router.push(`/addPicture?id=${picture.value.id}`)
+  router.push({
+    path: '/addPicture',
+    query: {
+      id: picture.value.id,
+      spaceId: picture.value.spaceId
+    }
+  })
 }
 
 const doDownload = () => {
-  downloadImage(picture.value.url);
+  downloadImage(picture.value.url)
 }
 </script>
 <style scoped></style>

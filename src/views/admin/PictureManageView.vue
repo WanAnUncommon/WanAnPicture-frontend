@@ -176,7 +176,7 @@ const pagination = computed(() => {
 })
 
 const fetchData = async () => {
-  const res = await listPictureByPageUsingPost({ ...searchParams })
+  const res = await listPictureByPageUsingPost({ ...searchParams ,nullSpaceId: true})
   if (res.data.code === 200) {
     dataList.value = res.data.data.records ?? []
     total.value = res.data.data.total ?? 0
