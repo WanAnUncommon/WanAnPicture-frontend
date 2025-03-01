@@ -15,6 +15,7 @@
         </a-tooltip>
       </a-space>
     </a-flex>
+    <PictureSearchForm :onSearch="onSearch"/>
     <div style="margin-bottom: 16px" />
     <PictureList :dataList="dataList" :loading="loading" :showOp="true" :onReload="fetchData"/>
     <a-pagination
@@ -33,6 +34,7 @@ import { getSpaceVoByIdUsingGet } from '@/api/spaceController.ts'
 import { listPictureVoByPageUsingPost } from '@/api/pictureController.ts'
 import { formatSize } from '@/utils'
 import PictureList from '@/components/PictureList.vue'
+import PictureSearchForm from "@/components/PictureSearchForm.vue";
 
 interface Props {
   id: string | number
@@ -58,20 +60,20 @@ onMounted(() => {
 const dataList = ref<API.PictureVO[]>([])
 
 const total = ref(0)
-const searchParams = reactive<API.PictureQueryRequest>({
+const searchParams = ref<API.PictureQueryRequest>({
   currentPage: 1,
   pageSize: 10,
 })
 const onPageChange = (page: number, pageSize: number) => {
-  searchParams.currentPage = page
-  searchParams.pageSize = pageSize
+  searchParams.value.currentPage = page
+  searchParams.value.pageSize = pageSize
   fetchData()
 }
 
 const loading = ref(true)
 const fetchData = async () => {
   loading.value = true
-  const params = { spaceId: props.id, ...searchParams }
+  const params = { spaceId: props.id, ...searchParams.value }
   const res = await listPictureVoByPageUsingPost(params)
   if (res.data.code === 200 && res.data.data) {
     dataList.value = res.data.data.records ?? []
@@ -82,8 +84,12 @@ const fetchData = async () => {
   loading.value = false
 }
 
-const doSearch = () => {
-  searchParams.currentPage = 1
+const onSearch = (newSearchParams: API.PictureQueryRequest) => {
+  searchParams.value={
+    ...searchParams.value,
+    ...newSearchParams,
+    currentPage:1
+  }
   fetchData()
 }
 
