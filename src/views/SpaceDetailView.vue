@@ -6,6 +6,9 @@
         <a-button type="primary" :href="`/addPicture?spaceId=${id}`" target="_blank"
           >创建图片
         </a-button>
+        <a-button :icon="h(EditOutlined)" @click="doBatchEditPicture">
+          批量编辑
+        </a-button>
         <a-tooltip :title="`空间占用:${formatSize(space.totalSize)}/${formatSize(space.maxSize)}`">
           <a-progress
             type="circle"
@@ -15,9 +18,9 @@
         </a-tooltip>
       </a-space>
     </a-flex>
-    <PictureSearchForm :onSearch="onSearch"/>
+    <PictureSearchForm :onSearch="onSearch" />
     <div style="margin-bottom: 16px" />
-    <PictureList :dataList="dataList" :loading="loading" :showOp="true" :onReload="fetchData"/>
+    <PictureList :dataList="dataList" :loading="loading" :showOp="true" :onReload="fetchData" />
     <a-pagination
       style="text-align: center"
       v-model:current="searchParams.currentPage"
@@ -25,16 +28,24 @@
       :total="total"
       @change="onPageChange"
     />
+    <BatchEditPictureModal
+      ref="batchEditPictureModalRef"
+      :spaceId="id"
+      :pictureList="dataList"
+      :onSuccess="onBatchEditPictureSuccess"
+    />
   </div>
 </template>
 <script setup lang="ts">
-import { onMounted, reactive, ref } from 'vue'
+import {h, onMounted, ref} from 'vue'
 import { message } from 'ant-design-vue'
 import { getSpaceVoByIdUsingGet } from '@/api/spaceController.ts'
 import { listPictureVoByPageUsingPost } from '@/api/pictureController.ts'
 import { formatSize } from '@/utils'
 import PictureList from '@/components/PictureList.vue'
-import PictureSearchForm from "@/components/PictureSearchForm.vue";
+import PictureSearchForm from '@/components/PictureSearchForm.vue'
+import BatchEditPictureModal from '@/components/BatchEditPictureModal.vue'
+import {EditOutlined} from "@ant-design/icons-vue";
 
 interface Props {
   id: string | number
@@ -85,10 +96,10 @@ const fetchData = async () => {
 }
 
 const onSearch = (newSearchParams: API.PictureQueryRequest) => {
-  searchParams.value={
+  searchParams.value = {
     ...searchParams.value,
     ...newSearchParams,
-    currentPage:1
+    currentPage: 1,
   }
   fetchData()
 }
@@ -97,5 +108,15 @@ const onSearch = (newSearchParams: API.PictureQueryRequest) => {
 onMounted(() => {
   fetchData()
 })
+
+const batchEditPictureModalRef = ref();
+const onBatchEditPictureSuccess = () => {
+  fetchData();
+};
+const doBatchEditPicture = () => {
+  if (batchEditPictureModalRef.value){
+    batchEditPictureModalRef.value.openModal();
+  }
+};
 </script>
 <style scoped></style>

@@ -18,7 +18,7 @@
       <a-form-item name="name" label="名称">
         <a-input v-model:value="pictureForm.name" placeholder="请输入图片名称" allow-clear />
       </a-form-item>
-      <a-form-item name="introduction" label="简洁">
+      <a-form-item name="introduction" label="简介">
         <a-textarea
           v-model:value="pictureForm.introduction"
           placeholder="请输入图片简介"
