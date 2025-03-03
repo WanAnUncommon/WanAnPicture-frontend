@@ -4,6 +4,12 @@
       <h2>空间管理</h2>
       <a-space>
         <a-button type="primary" href="/addSpace" target="_blank">创建空间</a-button>
+        <a-button type="primary" ghost href="/spaceAnalyze?queryAll=1" target="_blank"
+          >分析全部空间</a-button
+        >
+        <a-button type="primary" ghost href="/spaceAnalyze?queryPublic=1" target="_blank"
+          >分析公共图库</a-button
+        >
       </a-space>
     </a-flex>
     <div style="margin-bottom: 16px" />
@@ -13,11 +19,11 @@
       </a-form-item>
       <a-form-item label="空间级别">
         <a-select
-            v-model:value="searchParams.spaceLevel"
-            placeholder="请输入空间级别"
-            style="min-width: 124px"
-            :options="SPACE_LEVEL_OPTIONS"
-            allow-clear
+          v-model:value="searchParams.spaceLevel"
+          placeholder="请输入空间级别"
+          style="min-width: 124px"
+          :options="SPACE_LEVEL_OPTIONS"
+          allow-clear
         />
       </a-form-item>
       <a-form-item label="用户ID">
@@ -50,6 +56,9 @@
         </template>
         <template v-else-if="column.key === 'action'">
           <a-space wrap>
+            <a-button type="link" :href="`/spaceAnalyze?spaceId=${record.id}`" target="_blank"
+              >分析</a-button
+            >
             <a-button type="link" :href="`/addSpace?id=${record.id}`">编辑</a-button>
             <a-button danger @click="doDelete(record.id)">删除</a-button>
           </a-space>

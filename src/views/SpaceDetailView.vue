@@ -6,8 +6,15 @@
         <a-button type="primary" :href="`/addPicture?spaceId=${id}`" target="_blank"
           >创建图片
         </a-button>
-        <a-button :icon="h(EditOutlined)" @click="doBatchEditPicture">
-          批量编辑
+        <a-button :icon="h(EditOutlined)" @click="doBatchEditPicture"> 批量编辑</a-button>
+        <a-button
+          :icon="h(BarChartOutlined)"
+          :href="`/spaceAnalyze?spaceId=${id}`"
+          target="_blank"
+          type="primary"
+          ghost
+        >
+          空间分析
         </a-button>
         <a-tooltip :title="`空间占用:${formatSize(space.totalSize)}/${formatSize(space.maxSize)}`">
           <a-progress
@@ -37,7 +44,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import {h, onMounted, ref} from 'vue'
+import { h, onMounted, ref } from 'vue'
 import { message } from 'ant-design-vue'
 import { getSpaceVoByIdUsingGet } from '@/api/spaceController.ts'
 import { listPictureVoByPageUsingPost } from '@/api/pictureController.ts'
@@ -45,7 +52,7 @@ import { formatSize } from '@/utils'
 import PictureList from '@/components/PictureList.vue'
 import PictureSearchForm from '@/components/PictureSearchForm.vue'
 import BatchEditPictureModal from '@/components/BatchEditPictureModal.vue'
-import {EditOutlined} from "@ant-design/icons-vue";
+import { BarChartOutlined, EditOutlined } from '@ant-design/icons-vue'
 
 interface Props {
   id: string | number
@@ -109,14 +116,14 @@ onMounted(() => {
   fetchData()
 })
 
-const batchEditPictureModalRef = ref();
+const batchEditPictureModalRef = ref()
 const onBatchEditPictureSuccess = () => {
-  fetchData();
-};
+  fetchData()
+}
 const doBatchEditPicture = () => {
-  if (batchEditPictureModalRef.value){
-    batchEditPictureModalRef.value.openModal();
+  if (batchEditPictureModalRef.value) {
+    batchEditPictureModalRef.value.openModal()
   }
-};
+}
 </script>
 <style scoped></style>

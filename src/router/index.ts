@@ -11,6 +11,7 @@ import SpaceManageView from "@/views/admin/SpaceManageView.vue";
 import AddSpaceView from "@/views/AddSpaceView.vue";
 import MySpaceView from "@/views/MySpaceView.vue";
 import SpaceDetailView from "@/views/SpaceDetailView.vue";
+import SpaceAnalyzeView from "@/views/SpaceAnalyzeView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -76,6 +77,11 @@ const router = createRouter({
       name: '空间详情',
       component: SpaceDetailView,
       props: true,
+    },
+    {
+      path: '/spaceAnalyze',
+      name: '空间分析',
+      component: SpaceAnalyzeView,
     },
   ],
 })
