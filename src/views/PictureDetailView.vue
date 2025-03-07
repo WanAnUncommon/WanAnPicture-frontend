@@ -53,7 +53,7 @@
             <a-button v-if="canEdit" :icon="h(EditOutlined)" type="default" @click="doEdit"
               >编辑
             </a-button>
-            <a-button v-if="canEdit" :icon="h(DeleteOutlined)" danger @click="doDelete"
+            <a-button v-if="canDelete" :icon="h(DeleteOutlined)" danger @click="doDelete"
               >删除
             </a-button>
           </a-space>
@@ -70,6 +70,7 @@ import { deletePictureUsingPost, getPictureVoByIdUsingGet } from '@/api/pictureC
 import { downloadImage, formatSize } from '../utils'
 import { useLoginUserStore } from '@/stores/useLoginUserStore.ts'
 import { useRouter } from 'vue-router'
+import {SPACE_PERMISSION_ENUM} from "@/constants/space.ts";
 
 interface Props {
   id: string | number
@@ -91,15 +92,6 @@ onMounted(() => {
 })
 
 const loginUserStore = useLoginUserStore()
-//  判断是否有编辑权
-const canEdit = computed(() => {
-  const loginUser = loginUserStore.loginUser
-  if (!loginUser.id) {
-    return false
-  }
-  const user = picture.value.user || {}
-  return loginUser.id === user.id || loginUser.userRole === 'admin'
-})
 
 const doDelete = async () => {
   const id = props.id
@@ -120,13 +112,24 @@ const doEdit = () => {
     path: '/addPicture',
     query: {
       id: picture.value.id,
-      spaceId: picture.value.spaceId
-    }
+      spaceId: picture.value.spaceId,
+    },
   })
 }
 
 const doDownload = () => {
   downloadImage(picture.value.url)
 }
+
+// 通用权限检查函数
+function createPermissionChecker(permission: string) {
+  return computed(() => {
+    return (picture.value.permissionList ?? []).includes(permission)
+  })
+}
+
+// 定义权限检查
+const canEdit = createPermissionChecker(SPACE_PERMISSION_ENUM.PICTURE_EDIT)
+const canDelete = createPermissionChecker(SPACE_PERMISSION_ENUM.PICTURE_DELETE)
 </script>
 <style scoped></style>

@@ -1,6 +1,8 @@
 <template>
   <div id="addSpaceView">
-    <h2 style="margin-bottom: 16px">{{ route.query?.id ? '编辑空间' : '创建空间' }}</h2>
+    <h2 style="margin-bottom: 16px">
+      {{ route.query?.id ? '编辑' : '创建' }}{{ SPACE_TYPE_MAP[spaceType] }}
+    </h2>
     <a-form layout="vertical" :model="spaceForm" @finish="handleSubmit">
       <a-form-item name="spaceName" label="空间名称">
         <a-input v-model:value="spaceForm.spaceName" placeholder="请输入空间名称" allow-clear />
@@ -35,16 +37,16 @@
   </div>
 </template>
 <script setup lang="ts">
-import { onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 import {
   addSpaceUsingPost,
   getSpaceVoByIdUsingGet,
   listSpaceLevelUsingGet,
-  updateSpaceUsingPost
+  updateSpaceUsingPost,
 } from '@/api/spaceController.ts'
 import { message } from 'ant-design-vue'
 import { useRoute, useRouter } from 'vue-router'
-import { SPACE_LEVEL_OPTIONS } from '@/constants/space.ts'
+import { SPACE_LEVEL_OPTIONS, SPACE_TYPE_ENUM, SPACE_TYPE_MAP } from '@/constants/space.ts'
 import { formatSize } from '../utils'
 
 const space = ref<API.SpaceVO>()
@@ -53,8 +55,8 @@ const spaceLevelList = ref<API.SpaceLevel[]>([])
 
 // 获取空间级别列表
 const getSpaceLevelList = async () => {
-  const res = await listSpaceLevelUsingGet();
-  if (res.data.code === 200&& res.data.data) {
+  const res = await listSpaceLevelUsingGet()
+  if (res.data.code === 200 && res.data.data) {
     spaceLevelList.value = res.data.data
   } else {
     message.error('获取空间级别失败:' + res.data.message)
@@ -75,13 +77,14 @@ const router = useRouter()
  */
 const handleSubmit = async (values: any) => {
   loading.value = true
-  const spaceId=space.value?.id;
+  const spaceId = space.value?.id
   // 更新
-  let res;
+  let res
   if (spaceId) {
-    res=await updateSpaceUsingPost({ id: spaceId, ...values })
-  }else { // 创建
-    res = await addSpaceUsingPost({ ...values })
+    res = await updateSpaceUsingPost({ id: spaceId, ...values })
+  } else {
+    // 创建
+    res = await addSpaceUsingPost({ ...values, spaceType: spaceType.value })
   }
   if (res.data.code === 200) {
     message.success('操作成功')
@@ -106,13 +109,21 @@ const getOldSpace = async () => {
     const data = res.data.data
     space.value = data
     spaceForm.spaceName = data.spaceName
-    spaceForm.spaceLevel =data.spaceLevel.toString()
+    spaceForm.spaceLevel = data.spaceLevel.toString()
   } else {
     message.error('获取空间失败:' + res.data.message)
   }
 }
 onMounted(() => {
   getOldSpace()
+})
+
+const spaceType = computed(() => {
+  if (route.query?.type) {
+    return Number(route.query.type)
+  } else {
+    return SPACE_TYPE_ENUM.PRIVATE
+  }
 })
 </script>
 <style scoped>
